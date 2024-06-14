@@ -127,3 +127,4 @@ function voiceCard(card) {
     speechSynthesis.speak(utterance);
     actionsTaken = true;
 }
+
