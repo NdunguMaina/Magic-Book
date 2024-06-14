@@ -187,10 +187,13 @@ button:hover {
         flex-direction: column;
     }
     .card {
-        flex-basis: calc(100% - 20px);
+        flex-basis: auto;
         margin: 10px 0;
         width: 90%;
         height: 60%;
+        width: 80vw;
+        height: 30vh;
+        flex-wrap: wrap;
     }
 }
 
