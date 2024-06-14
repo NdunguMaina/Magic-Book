@@ -1,21 +1,28 @@
-const consonantsAndSyllables = [
-    'B', 'CH', 'D', 'SH', 'T', 'TH', 'G', 'GH', 'K', 'PH', 
-    'R', 'WH', 'P', 'NG', 'L', 'F', 'S', 'Z', 'V', 'J', 
-    'M', 'N', 'QU', 'X', 'Y'
+const consonantsAndSyllablesFirst = [
+    'B', 'C', 'D', 'F', 'G', 'J', 'H', 'K', 'L', 'M', 
+    'N', 'P', 'Q', 'R', 'S', 'T', 'V', 'W', 'Y', 'Z', 
+    'BL', 'BR', 'CR', 'FL', 'GR', 'PL', 'PR', 'SL', 'SP', 'ST', 'TR', 'CH', 'SH', 'TH', 'WH', ''
 ];
-const vowels = ['A', 'E', 'I', 'O', 'U', 'AE', 'EE', 'IE', 'OA', 'OO'];
+
+const vowels = ['A', 'E', 'I', 'O', 'U', 'EA' , 'AI', 'EE' , 'OA', 'OO', 'IE', 'OI', 'OY', 'AY', 'Y', 'UE', 'AW', 'OW', 'A', ''];
+
+const consonantsAndSyllablesLast = [
+    'B', 'CK', 'D', 'G', 'K', 'LL', 'L', 'M', 'N', 'P', 
+    'R', 'S', 'SS', 'T', 'W', 'X', 'CE', 'DE', 'KE', 'ME', 'NE', 
+    'RE', 'TE', 'VE', 'MP', 'ND', 'NK', 'ST', 'NG', 'SH', 'NK', 'TH', 'CH', 'SH', 'SS', ''
+];
 
 document.addEventListener("DOMContentLoaded", () => {
     const cardContainer = document.getElementById('card-container');
 
     // Create first card with consonants/syllables
-    cardContainer.appendChild(createCard(consonantsAndSyllables, 0));
+    cardContainer.appendChild(createCard(consonantsAndSyllablesFirst, 0));
 
     // Create middle card with vowels
     cardContainer.appendChild(createCard(vowels, 0));
 
     // Create last card with consonants/syllables
-    cardContainer.appendChild(createCard(consonantsAndSyllables, 1));
+    cardContainer.appendChild(createCard(consonantsAndSyllablesLast, 0));
 });
 
 function createCard(array, index) {
@@ -58,7 +65,16 @@ function createCard(array, index) {
 
 function changeCardContent(button, direction) {
     const card = button.parentElement;
-    const array = card.querySelector('.front').innerText.match(/[AEIOU]/i) ? vowels : consonantsAndSyllables;
+    let array;
+
+    if (card.querySelector('.front').innerText.match(/[AEIOU]/i)) {
+        array = vowels;
+    } else if (card === card.parentElement.firstChild) {
+        array = consonantsAndSyllablesFirst;
+    } else {
+        array = consonantsAndSyllablesLast;
+    }
+
     let index = parseInt(card.getAttribute('data-index'));
     index = (index + direction + array.length) % array.length;
     card.setAttribute('data-index', index);
@@ -100,7 +116,7 @@ function readWord() {
     // Speak each letter individually with a delay between each
     async function speakLettersAndWord() {
         for (let i = 0; i < word.length; i++) {
-            await speakLetter(word[i], 300); // 500ms delay between each letter
+            await speakLetter(word[i], 200); // 500ms delay between each letter
         }
         
         // After speaking all letters, speak the whole word
