@@ -178,6 +178,8 @@ button:hover {
 @media (max-width: 767px) {
     body {
         padding: 0 10px;
+        height: auto;
+        width: auto;
     }
     .instructions {
         max-width: 100%;
@@ -193,7 +195,5 @@ button:hover {
         height: 60%;
         width: 80vw;
         height: 30vh;
-        flex-wrap: wrap;
     }
 }
-
