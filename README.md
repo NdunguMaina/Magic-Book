@@ -1,1 +1,1 @@
-Use Chrome browser for best results.
+While using a phone use Chrome browser for best results.
