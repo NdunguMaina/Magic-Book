@@ -106,10 +106,7 @@ function changeCardContent(button, direction) {
 let actionsTaken = false;
 
 function readWord() {
-    // if (!actionsTaken) {
-    //     alert("Please interact with the cards before reading the word.");
-    //     return;
-    // }
+   
 
     const cards = document.querySelectorAll('.card');
     let word = '';
@@ -136,7 +133,7 @@ function readWord() {
     // Speak each letter individually with a delay between each
     async function speakLettersAndWord() {
         for (let i = 0; i < word.length; i++) {
-            await speakLetter(word[i], 200); // 200ms delay between each letter
+            await speakLetter(word[i], 100); // 100ms delay between each letter
         }
 
         // After speaking all letters, speak the whole word
