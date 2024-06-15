@@ -168,7 +168,7 @@ function voiceCard(card) {
 }
 
 const signLanguageImages = {
-    'A': 'images/A.png',
+    'A': './Images/A.png',
     'B': './images/B.png',
     'C': './images/C.png',
     'D': './images/D.png',
