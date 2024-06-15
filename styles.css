@@ -181,3 +181,9 @@ button:hover {
         height: 30vh;
     }
 }
+
+.sign-language-image {
+    width: 100%; /* Adjust as needed */
+    height: auto; /* Maintain aspect ratio */
+    object-fit: contain; /* Ensure the image fits nicely */
+}

@@ -49,9 +49,6 @@ function createCard(array, index) {
     front.className = 'front';
     front.innerText = array[index];
 
-    const frontImage = document.createElement('img');
-    frontImage.className = 'sign-image';
-    frontImage.src = `images/${array[index]}.png`; // Ensure the images are named correctly
 
     const back = document.createElement('div');
     back.className = 'back';
@@ -65,6 +62,7 @@ function createCard(array, index) {
     back.appendChild(backImage);
 
     innerCard.appendChild(front);
+    
     innerCard.appendChild(back);
 
     card.appendChild(upButton);
