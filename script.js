@@ -49,9 +49,20 @@ function createCard(array, index) {
     front.className = 'front';
     front.innerText = array[index];
 
+    const frontImage = document.createElement('img');
+    frontImage.className = 'sign-image';
+    frontImage.src = `images/${array[index]}.png`; // Ensure the images are named correctly
+
     const back = document.createElement('div');
     back.className = 'back';
     back.innerText = array[(index + 1) % array.length];
+
+    const backImage = document.createElement('img');
+    backImage.className = 'sign-image';
+    backImage.src = `images/${array[(index + 1) % array.length]}.png`; // Ensure the images are named correctly
+
+    front.appendChild(frontImage);
+    back.appendChild(backImage);
 
     innerCard.appendChild(front);
     innerCard.appendChild(back);
@@ -78,8 +89,17 @@ function changeCardContent(button, direction) {
     let index = parseInt(card.getAttribute('data-index'));
     index = (index + direction + array.length) % array.length;
     card.setAttribute('data-index', index);
-    card.querySelector('.front').innerText = array[index];
-    card.querySelector('.back').innerText = array[(index + 1) % array.length];
+
+    const front = card.querySelector('.front');
+    const back = card.querySelector('.back');
+    front.innerText = array[index];
+    back.innerText = array[(index + 1) % array.length];
+
+    const frontImage = front.querySelector('img');
+    const backImage = back.querySelector('img');
+    frontImage.src = `images/${array[index]}.png`;
+    backImage.src = `images/${array[(index + 1) % array.length]}.png`;
+
     actionsTaken = true;
 }
 
@@ -90,7 +110,7 @@ function readWord() {
     //     alert("Please interact with the cards before reading the word.");
     //     return;
     // }
-    
+
     const cards = document.querySelectorAll('.card');
     let word = '';
 
@@ -116,9 +136,9 @@ function readWord() {
     // Speak each letter individually with a delay between each
     async function speakLettersAndWord() {
         for (let i = 0; i < word.length; i++) {
-            await speakLetter(word[i], 200); // 500ms delay between each letter
+            await speakLetter(word[i], 200); // 200ms delay between each letter
         }
-        
+
         // After speaking all letters, speak the whole word
         const utterance = new SpeechSynthesisUtterance(word);
         utterance.voice = speechSynthesis.getVoices().find(voice => voice.name.includes("Google UK English Female"));
@@ -143,4 +163,3 @@ function voiceCard(card) {
     speechSynthesis.speak(utterance);
     actionsTaken = true;
 }
-
