@@ -49,11 +49,13 @@ function createCard(array, index) {
     front.className = 'front';
     front.innerText = array[index];
 
+
     const back = document.createElement('div');
     back.className = 'back';
     back.innerText = array[(index + 1) % array.length];
 
     innerCard.appendChild(front);
+    
     innerCard.appendChild(back);
 
     card.appendChild(upButton);
