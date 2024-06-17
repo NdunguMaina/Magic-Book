@@ -133,6 +133,9 @@ button:hover {
     margin-top: 10px;
 }
 
+.blue { color: blue; }
+.orange { color: orange; }
+
 @keyframes slide-in {
     from {
         transform: translateX(-50px);
