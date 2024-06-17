@@ -15,17 +15,17 @@ const consonantsAndSyllablesLast = [
 document.addEventListener("DOMContentLoaded", () => {
     const cardContainer = document.getElementById('card-container');
 
-    // Create first card with consonants/syllables
-    cardContainer.appendChild(createCard(consonantsAndSyllablesFirst, 0));
+    // Create first card with consonants/syllables (blue)
+    cardContainer.appendChild(createCard(consonantsAndSyllablesFirst, 0, 'blue'));
 
-    // Create middle card with vowels
-    cardContainer.appendChild(createCard(vowels, 0));
+    // Create middle card with vowels (orange)
+    cardContainer.appendChild(createCard(vowels, 0, 'orange'));
 
-    // Create last card with consonants/syllables
-    cardContainer.appendChild(createCard(consonantsAndSyllablesLast, 0));
+    // Create last card with consonants/syllables (blue)
+    cardContainer.appendChild(createCard(consonantsAndSyllablesLast, 0, 'blue'));
 });
 
-function createCard(array, index) {
+function createCard(array, index, colorClass) {
     const card = document.createElement('div');
     card.className = 'card';
     card.setAttribute('data-letter', array[index]);
@@ -46,7 +46,7 @@ function createCard(array, index) {
     innerCard.className = 'inner-card';
 
     const front = document.createElement('div');
-    front.className = 'front';
+    front.className = 'front ' + colorClass; // Add color class here
     front.innerText = array[index];
 
     const signLanguageImage = document.createElement('img');
@@ -58,11 +58,10 @@ function createCard(array, index) {
     card.appendChild(signLanguageImage);
 
     const back = document.createElement('div');
-    back.className = 'back';
+    back.className = 'back ' + colorClass; // Add color class here
     back.innerText = array[(index + 1) % array.length];
 
     innerCard.appendChild(front);
-    
     innerCard.appendChild(back);
 
     card.appendChild(upButton);
@@ -85,155 +84,107 @@ function changeCardContent(button, direction) {
         array = consonantsAndSyllablesLast;
     }
 
-    let index = parseInt(card.getAttribute('data-index'));
-    newIndex = (index + direction + array.length) % array.length;
-    card.setAttribute('data-index', newIndex);
+    const currentIndex = parseInt(card.getAttribute('data-index'));
+    newIndex = (currentIndex + direction + array.length) % array.length;
+
     card.querySelector('.front').innerText = array[newIndex];
     card.querySelector('.back').innerText = array[(newIndex + 1) % array.length];
+    card.setAttribute('data-index', newIndex);
+    card.setAttribute('data-letter', array[newIndex]);
 
-    // Find and update the sign language image
+    // Update the sign language image
     const signLanguageImage = card.querySelector('.sign-language-image');
-    if (signLanguageImage) {
-        if (signLanguageImages[array[newIndex]]) {
-            signLanguageImage.src = signLanguageImages[array[newIndex]];
-            signLanguageImage.alt = 'Sign Language for ' + array[newIndex];
-        } else {
-            // Optional: Handle missing images
-            signLanguageImage.src = 'path/to/placeholder.png'; // Path to a generic or placeholder image
-        }
-    }
-
-    actionsTaken = true;
-}
-
-let actionsTaken = false;
-
-function readWord() {
-    // if (!actionsTaken) {
-    //     alert("Please interact with the cards before reading the word.");
-    //     return;
-    // }
-    
-    const cards = document.querySelectorAll('.card');
-    let word = '';
-
-    // Collect the word from the visible side of the cards
-    cards.forEach(card => {
-        const front = card.querySelector('.front');
-        const back = card.querySelector('.back');
-        word += card.classList.contains('flipped') ? back.textContent : front.textContent;
-    });
-
-    // Function to speak a letter
-    function speakLetter(letter, delay) {
-        return new Promise(resolve => {
-            setTimeout(() => {
-                const utterance = new SpeechSynthesisUtterance(letter);
-                utterance.voice = speechSynthesis.getVoices().find(voice => voice.name.includes("Google UK English Female"));
-                utterance.onend = resolve;
-                speechSynthesis.speak(utterance);
-            }, delay);
-        });
-    }
-
-    // Speak each letter individually with a delay between each
-    async function speakLettersAndWord() {
-        for (let i = 0; i < word.length; i++) {
-            await speakLetter(word[i], 200); // 500ms delay between each letter
-        }
-        
-        // After speaking all letters, speak the whole word
-        const utterance = new SpeechSynthesisUtterance(word);
-        utterance.voice = speechSynthesis.getVoices().find(voice => voice.name.includes("Google UK English Female"));
-        speechSynthesis.speak(utterance);
-    }
-
-    speakLettersAndWord();
-}
-
-function flipCard(button) {
-    const card = button.parentElement;
-    card.classList.toggle('flipped');
-    actionsTaken = true;
+    signLanguageImage.src = signLanguageImages[array[newIndex]];
+    signLanguageImage.alt = 'Sign Language for ' + array[newIndex];
 }
 
 function voiceCard(card) {
-    const front = card.querySelector('.front');
-    const back = card.querySelector('.back');
-    const letter = card.classList.contains('flipped') ? back.textContent : front.textContent;
-    const utterance = new SpeechSynthesisUtterance(letter);
-    utterance.voice = speechSynthesis.getVoices().find(voice => voice.name.includes("Google UK English Female"));
-    speechSynthesis.speak(utterance);
-    actionsTaken = true;
+    const letter = card.getAttribute('data-letter');
+    const msg = new SpeechSynthesisUtterance(letter);
+    window.speechSynthesis.speak(msg);
+}
+
+function readWord() {
+    const cards = document.querySelectorAll('.card');
+    let word = '';
+    cards.forEach(card => {
+        word += card.getAttribute('data-letter');
+    });
+    const msg = new SpeechSynthesisUtterance(word);
+    window.speechSynthesis.speak(msg);
 }
 
 const signLanguageImages = {
-    'A': './Images/A.png',
-    'B': './images/B.png',
-    'C': './images/C.png',
-    'D': './images/D.png',
-    'E': './images/E.png',
-    'F': './images/F.png',
-    'G': './images/G.png',
-    'H': './images/H.png',
-    'I': './images/I.png',
-    'J': './images/J.png',
-    'K': './images/K.png',
-    'L': './images/L.png',
-    'M': './images/M.png',
-    'N': './images/N.png',
-    'O': './images/O.png',
-    'P': './images/P.png',
-    'Q': './images/Q.png',
-    'R': './images/R.png',
-    'S': './images/S.png',
-    'T': './images/T.png',
-    'U': './images/U.png',
-    'V': './images/V.png',
-    'W': './images/W.png',
-    'X': './images/X.png',
-    'Y': './images/Y.png',
-    'Z': './images/Z.png',
-    'AI': './images/AI.png',
-    'AW': './images/AW.png',
-    'AY': './images/AY.png',
-    'BL': './images/BL.png',
-    'BR': './images/BR.png',
-    'CE': './images/CE.png',
-    'CH': './images/CH.png',
-    'CK': './images/CK.png',
-    'CR': './images/CR.png',
-    'DE': './images/DE.png',
-    'EA': './images/EA.png',
-    'EE': './images/EE.png',
-    'FL': './images/FL.png',
-    'GR': './images/GR.png',
-    'IE': './images/IE.png',
-    'KE': './images/KE.png',
-    'LL': './images/LL.png',
-    'ME': './images/ME.png',
-    'MP': './images/MP.png',
-    'ND': './images/ND.png',
-    'NG': './images/NG.png',
-    'NE': './images/NE.png',
-    'NK': './images/NK.png',
-    'OA': './images/OA.png',
-    'OI': './images/OI.png',
-    'OO': './images/OO.png',
-    'OY': './images/OY.png',
-    'PL': './images/PL.png',
-    'PR': './images/PR.png',
-    'QU': './images/QU.png',
-    'RE': './images/RE.png',
-    'SH': './images/SH.png',
-    'SL': './images/SL.png',
-    'SP': './images/SP.png',
-    'SS': './images/SS.png',
-    'ST': './images/ST.png',
-    'TE': './images/TE.png',
-    'TH': './images/TH.png',
-    'TR': './images/TR.png',
-    'UE': './images/UE.png',
-    'VE': './images/VE.png',
-    'WH': './images/WH.png'
+    'A': 'images/a.png',
+    'B': 'images/b.png',
+    'C': 'images/c.png',
+    'D': 'images/d.png',
+    'E': 'images/e.png',
+    'F': 'images/f.png',
+    'G': 'images/g.png',
+    'H': 'images/h.png',
+    'I': 'images/i.png',
+    'J': 'images/j.png',
+    'K': 'images/k.png',
+    'L': 'images/l.png',
+    'M': 'images/m.png',
+    'N': 'images/n.png',
+    'O': 'images/o.png',
+    'P': 'images/p.png',
+    'Q': 'images/q.png',
+    'R': 'images/r.png',
+    'S': 'images/s.png',
+    'T': 'images/t.png',
+    'U': 'images/u.png',
+    'V': 'images/v.png',
+    'W': 'images/w.png',
+    'X': 'images/x.png',
+    'Y': 'images/y.png',
+    'Z': 'images/z.png',
+    'BL': 'images/bl.png',
+    'BR': 'images/br.png',
+    'CR': 'images/cr.png',
+    'FL': 'images/fl.png',
+    'GR': 'images/gr.png',
+    'PL': 'images/pl.png',
+    'PR': 'images/pr.png',
+    'SL': 'images/sl.png',
+    'SP': 'images/sp.png',
+    'ST': 'images/st.png',
+    'TR': 'images/tr.png',
+    'CH': 'images/ch.png',
+    'SH': 'images/sh.png',
+    'TH': 'images/th.png',
+    'WH': 'images/wh.png',
+    'CK': 'images/ck.png',
+    'LL': 'images/ll.png',
+    'SS': 'images/ss.png',
+    'CE': 'images/ce.png',
+    'DE': 'images/de.png',
+    'KE': 'images/ke.png',
+    'ME': 'images/me.png',
+    'NE': 'images/ne.png',
+    'RE': 'images/re.png',
+    'TE': 'images/te.png',
+    'VE': 'images/ve.png',
+    'MP': 'images/mp.png',
+    'ND': 'images/nd.png',
+    'NK': 'images/nk.png',
+    'ST': 'images/st.png',
+    'NG': 'images/ng.png',
+    'EA': 'images/ea.png',
+    'AI': 'images/ai.png',
+    'EE': 'images/ee.png',
+    'OA': 'images/oa.png',
+    'OO': 'images/oo.png',
+    'IE': 'images/ie.png',
+    'OI': 'images/oi.png',
+    'OY': 'images/oy.png',
+    'AY': 'images/ay.png',
+    'UE': 'images/ue.png',
+    'AW': 'images/aw.png',
+    'OW': 'images/ow.png',
+    'UE': 'images/ue.png',
+    'AW': 'images/aw.png',
+    'OW': 'images/ow.png'
 };
