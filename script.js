@@ -1,15 +1,15 @@
 const consonantsAndSyllablesFirst = [
-    'B', 'C', 'D', 'F', 'G', 'J', 'H', 'K', 'L', 'M', 
-    'N', 'P', 'Q', 'R', 'S', 'T', 'V', 'W', 'Y', 'Z', 
-    'BL', 'BR', 'CR', 'FL', 'GR', 'PL', 'PR', 'SL', 'SP', 'ST', 'TR', 'CH', 'SH', 'TH', 'WH', ''
+    'b', 'c', 'd', 'f', 'g', 'j', 'h', 'k', 'l', 'm', 
+    'n', 'p', 'q', 'r', 's', 't', 'v', 'w', 'y', 'z', 
+    'bl', 'br', 'cr', 'fl', 'gr', 'pl', 'pr', 'sl', 'sp', 'st', 'tr', 'ch', 'sh', 'th', 'wh', ''
 ];
 
-const vowels = ['A', 'E', 'I', 'O', 'U', 'EA' , 'AI', 'EE' , 'OA', 'OO', 'IE', 'OI', 'OY', 'AY', 'Y', 'UE', 'AW', 'OW', 'A', ''];
+const vowels = ['a', 'e', 'i', 'o', 'u', 'ea', 'ai', 'ee', 'oa', 'oo', 'ie', 'oi', 'oy', 'ay', 'y', 'ue', 'aw', 'ow', 'a', ''];
 
 const consonantsAndSyllablesLast = [
-    'B', 'CK', 'D', 'G', 'K', 'LL', 'L', 'M', 'N', 'P', 
-    'R', 'S', 'SS', 'T', 'W', 'X', 'CE', 'DE', 'KE', 'ME', 'NE', 
-    'RE', 'TE', 'VE', 'MP', 'ND', 'NK', 'ST', 'NG', 'SH', 'NK', 'TH', 'CH', 'SH', 'SS', ''
+    'b', 'ck', 'd', 'g', 'k', 'll', 'l', 'm', 'n', 'p', 
+    'r', 's', 'ss', 't', 'w', 'x', 'ce', 'de', 'ke', 'me', 'ne', 
+    're', 'te', 've', 'mp', 'nd', 'nk', 'st', 'ng', 'sh', 'nk', 'th', 'ch', 'sh', 'ss', ''
 ];
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -35,12 +35,12 @@ function createCard(array, index, colorClass) {
     const upButton = document.createElement('button');
     upButton.className = 'arrow up';
     upButton.innerHTML = '&#9650;';
-    upButton.setAttribute('onclick', 'changeCardContent(this, 1)');
+    upButton.setAttribute('onclick', 'changeCardContent(event, this, 1)');
 
     const downButton = document.createElement('button');
     downButton.className = 'arrow down';
     downButton.innerHTML = '&#9660;';
-    downButton.setAttribute('onclick', 'changeCardContent(this, -1)');
+    downButton.setAttribute('onclick', 'changeCardContent(event, this, -1)');
 
     const innerCard = document.createElement('div');
     innerCard.className = 'inner-card';
@@ -71,12 +71,13 @@ function createCard(array, index, colorClass) {
     return card;
 }
 
-function changeCardContent(button, direction) {
+function changeCardContent(event, button, direction) {
+    event.stopPropagation(); // Prevent card click event
     const card = button.parentElement;
     let array;
     let newIndex;
 
-    if (card.querySelector('.front').innerText.match(/[AEIOU]/i)) {
+    if (card.querySelector('.front').innerText.match(/[aeiou]/i)) {
         array = vowels;
     } else if (card === card.parentElement.firstChild) {
         array = consonantsAndSyllablesFirst;
@@ -107,84 +108,96 @@ function voiceCard(card) {
 function readWord() {
     const cards = document.querySelectorAll('.card');
     let word = '';
+    let utterances = [];
+
     cards.forEach(card => {
-        word += card.getAttribute('data-letter');
+        const letter = card.getAttribute('data-letter');
+        word += letter;
+        const msg = new SpeechSynthesisUtterance(letter);
+        utterances.push(msg);
     });
-    const msg = new SpeechSynthesisUtterance(word);
-    window.speechSynthesis.speak(msg);
+
+    const wordUtterance = new SpeechSynthesisUtterance(word);
+    utterances.push(wordUtterance);
+
+    // Speak each utterance in sequence
+    utterances.reduce((promise, utterance) => {
+        return promise.then(() => {
+            return new Promise(resolve => {
+                utterance.onend = resolve;
+                window.speechSynthesis.speak(utterance);
+            });
+        });
+    }, Promise.resolve());
 }
 
 const signLanguageImages = {
-    'A': 'images/a.png',
-    'B': 'images/b.png',
-    'C': 'images/c.png',
-    'D': 'images/d.png',
-    'E': 'images/e.png',
-    'F': 'images/f.png',
-    'G': 'images/g.png',
-    'H': 'images/h.png',
-    'I': 'images/i.png',
-    'J': 'images/j.png',
-    'K': 'images/k.png',
-    'L': 'images/l.png',
-    'M': 'images/m.png',
-    'N': 'images/n.png',
-    'O': 'images/o.png',
-    'P': 'images/p.png',
-    'Q': 'images/q.png',
-    'R': 'images/r.png',
-    'S': 'images/s.png',
-    'T': 'images/t.png',
-    'U': 'images/u.png',
-    'V': 'images/v.png',
-    'W': 'images/w.png',
-    'X': 'images/x.png',
-    'Y': 'images/y.png',
-    'Z': 'images/z.png',
-    'BL': 'images/bl.png',
-    'BR': 'images/br.png',
-    'CR': 'images/cr.png',
-    'FL': 'images/fl.png',
-    'GR': 'images/gr.png',
-    'PL': 'images/pl.png',
-    'PR': 'images/pr.png',
-    'SL': 'images/sl.png',
-    'SP': 'images/sp.png',
-    'ST': 'images/st.png',
-    'TR': 'images/tr.png',
-    'CH': 'images/ch.png',
-    'SH': 'images/sh.png',
-    'TH': 'images/th.png',
-    'WH': 'images/wh.png',
-    'CK': 'images/ck.png',
-    'LL': 'images/ll.png',
-    'SS': 'images/ss.png',
-    'CE': 'images/ce.png',
-    'DE': 'images/de.png',
-    'KE': 'images/ke.png',
-    'ME': 'images/me.png',
-    'NE': 'images/ne.png',
-    'RE': 'images/re.png',
-    'TE': 'images/te.png',
-    'VE': 'images/ve.png',
-    'MP': 'images/mp.png',
-    'ND': 'images/nd.png',
-    'NK': 'images/nk.png',
-    'ST': 'images/st.png',
-    'NG': 'images/ng.png',
-    'EA': 'images/ea.png',
-    'AI': 'images/ai.png',
-    'EE': 'images/ee.png',
-    'OA': 'images/oa.png',
-    'OO': 'images/oo.png',
-    'IE': 'images/ie.png',
-    'OI': 'images/oi.png',
-    'OY': 'images/oy.png',
-    'AY': 'images/ay.png',
-    'UE': 'images/ue.png',
-    'AW': 'images/aw.png',
-    'OW': 'images/ow.png',
-    'UE': 'images/ue.png',
-    'AW': 'images/aw.png',
-    'OW': 'images/ow.png'
+    'a': 'images/a.png',
+    'b': 'images/b.png',
+    'c': 'images/c.png',
+    'd': 'images/d.png',
+    'e': 'images/e.png',
+    'f': 'images/f.png',
+    'g': 'images/g.png',
+    'h': 'images/h.png',
+    'i': 'images/i.png',
+    'j': 'images/j.png',
+    'k': 'images/k.png',
+    'l': 'images/l.png',
+    'm': 'images/m.png',
+    'n': 'images/n.png',
+    'o': 'images/o.png',
+    'p': 'images/p.png',
+    'q': 'images/q.png',
+    'r': 'images/r.png',
+    's': 'images/s.png',
+    't': 'images/t.png',
+    'u': 'images/u.png',
+    'v': 'images/v.png',
+    'w': 'images/w.png',
+    'x': 'images/x.png',
+    'y': 'images/y.png',
+    'z': 'images/z.png',
+    'bl': 'images/bl.png',
+    'br': 'images/br.png',
+    'cr': 'images/cr.png',
+    'fl': 'images/fl.png',
+    'gr': 'images/gr.png',
+    'pl': 'images/pl.png',
+    'pr': 'images/pr.png',
+    'sl': 'images/sl.png',
+    'sp': 'images/sp.png',
+    'st': 'images/st.png',
+    'tr': 'images/tr.png',
+    'ch': 'images/ch.png',
+    'sh': 'images/sh.png',
+    'th': 'images/th.png',
+    'wh': 'images/wh.png',
+    'ck': 'images/ck.png',
+    'll': 'images/ll.png',
+    'ss': 'images/ss.png',
+    'ce': 'images/ce.png',
+    'de': 'images/de.png',
+    'ke': 'images/ke.png',
+    'me': 'images/me.png',
+    'ne': 'images/ne.png',
+    're': 'images/re.png',
+    'te': 'images/te.png',
+    've': 'images/ve.png',
+    'mp': 'images/mp.png',
+    'nd': 'images/nd.png',
+    'nk': 'images/nk.png',
+    'ng': 'images/ng.png',
+    'ea': 'images/ea.png',
+    'ai': 'images/ai.png',
+    'ee': 'images/ee.png',
+    'oa': 'images/oa.png',
+    'oo': 'images/oo.png',
+    'ie': 'images/ie.png',
+    'oi': 'images/oi.png',
+    'oy': 'images/oy.png',
+    'ay': 'images/ay.png',
+    'ue': 'images/ue.png',
+    'aw': 'images/aw.png',
+    'ow': 'images/ow.png'
 };
