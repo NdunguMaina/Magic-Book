@@ -200,4 +200,4 @@ const signLanguageImages = {
     'ue': 'images/UE.png',
     'aw': 'images/AW.png',
     'ow': 'images/OW.png'
-}
+};
