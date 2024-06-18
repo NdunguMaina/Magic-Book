@@ -168,7 +168,7 @@ const signLanguageImages = {
     'sl': 'images/SL.png',
     'sp': 'images/SP.png',
     'st': 'images/ST.png',
-    'tr': 'images/RT.png',
+    'tr': 'images/TR.png',
     'ch': 'images/CH.png',
     'sh': 'images/SH.png',
     'th': 'images/TH.png',
