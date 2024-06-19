@@ -49,14 +49,6 @@ function createCard(array, index, colorClass) {
     front.className = 'front ' + colorClass; // Add color class here
     front.innerText = array[index];
 
-    const signLanguageImage = document.createElement('img');
-    signLanguageImage.className = 'sign-language-image'; 
-    signLanguageImage.src = signLanguageImages[array[index]];
-    signLanguageImage.alt = 'Sign Language for ' + array[index];
-
-    // Append the sign language image to the card
-    card.appendChild(signLanguageImage);
-
     const back = document.createElement('div');
     back.className = 'back ' + colorClass; // Add color class here
     back.innerText = array[(index + 1) % array.length];
@@ -66,6 +58,14 @@ function createCard(array, index, colorClass) {
 
     card.appendChild(upButton);
     card.appendChild(innerCard);
+
+    const signLanguageImage = document.createElement('img');
+    signLanguageImage.className = 'sign-language-image'; 
+    signLanguageImage.src = signLanguageImages[array[index]];
+    signLanguageImage.alt = 'Sign Language for ' + array[index];
+
+    card.appendChild(signLanguageImage);
+
     card.appendChild(downButton);
 
     return card;
