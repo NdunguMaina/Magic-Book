@@ -36,11 +36,13 @@ function createCard(array, index, colorClass) {
     upButton.className = 'arrow up';
     upButton.innerHTML = '&#9650;';
     upButton.setAttribute('onclick', 'changeCardContent(event, this, 1)');
+    upButton.setAttribute('aria-label', 'Move to previous letter');
 
     const downButton = document.createElement('button');
     downButton.className = 'arrow down';
     downButton.innerHTML = '&#9660;';
     downButton.setAttribute('onclick', 'changeCardContent(event, this, -1)');
+    downButton.setAttribute('aria-label', 'Move to next letter');
 
     const innerCard = document.createElement('div');
     innerCard.className = 'inner-card';
@@ -48,6 +50,7 @@ function createCard(array, index, colorClass) {
     const front = document.createElement('div');
     front.className = 'front ' + colorClass; // Add color class here
     front.innerText = array[index];
+    front.tabIndex = 0; // Add tabindex for keyboard navigation
 
     const back = document.createElement('div');
     back.className = 'back ' + colorClass; // Add color class here
@@ -73,30 +76,45 @@ function createCard(array, index, colorClass) {
 
 function changeCardContent(event, button, direction) {
     event.stopPropagation(); // Prevent card click event
-    const card = button.parentElement;
-    let array;
-    let newIndex;
-
-    if (card.querySelector('.front').innerText.match(/[aeiou]/i)) {
-        array = vowels;
-    } else if (card === card.parentElement.firstChild) {
-        array = consonantsAndSyllablesFirst;
-    } else {
-        array = consonantsAndSyllablesLast;
-    }
+    const card = button.closest('.card'); // Ensure we're referencing the correct card element
+    const cardText = card.querySelector('.front').innerText;
+    const array = getArrayFromCardText(cardText, card);
 
     const currentIndex = parseInt(card.getAttribute('data-index'));
-    newIndex = (currentIndex + direction + array.length) % array.length;
+    const arrayLength = array.length;
+    const newIndex = (currentIndex + direction + arrayLength) % arrayLength;
 
-    card.querySelector('.front').innerText = array[newIndex];
-    card.querySelector('.back').innerText = array[(newIndex + 1) % array.length];
-    card.setAttribute('data-index', newIndex);
-    card.setAttribute('data-letter', array[newIndex]);
+    updateCardContent(card, array, newIndex);
+}
 
-    // Update the sign language image
+function getArrayFromCardText(text, card) {
+    // Check if the text contains any vowel, if so, it's likely from the vowels array
+    if (text.match(/[aeiouy]/i)) {
+        return vowels;
+    } else {
+        // Determine if the card is the first or last based on its position
+        const isFirstCard = card === card.parentNode.firstChild;
+        const isLastCard = card === card.parentNode.lastChild;
+        if (isFirstCard) {
+            return consonantsAndSyllablesFirst;
+        } else if (isLastCard) {
+            return consonantsAndSyllablesLast;
+        } else {
+            // Default to the last array if middle card is not clearly identified
+            return consonantsAndSyllablesLast;
+        }
+    }
+}
+
+function updateCardContent(card, array, index) {
+    card.querySelector('.front').innerText = array[index];
+    card.querySelector('.back').innerText = array[(index + 1) % array.length];
+    card.setAttribute('data-index', index);
+    card.setAttribute('data-letter', array[index]);
+
     const signLanguageImage = card.querySelector('.sign-language-image');
-    signLanguageImage.src = signLanguageImages[array[newIndex]];
-    signLanguageImage.alt = 'Sign Language for ' + array[newIndex];
+    signLanguageImage.src = signLanguageImages[array[index]];
+    signLanguageImage.alt = 'Sign Language for ' + array[index];
 }
 
 function voiceCard(card) {

@@ -49,6 +49,12 @@ body {
     border: 2px solid black;
 }
 
+.card:hover {
+    transform: scale(1.1);
+    transition: transform 0.3s ease-in-out;
+    box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.4);
+}
+
 .inner-card {
     width: 6cm;
     height: 9cm;
@@ -106,10 +112,12 @@ button {
     border: none;
     border-radius: 5px;
     animation: slide-in 1s ease-out forwards;
+
 }
 
 button:hover {
-    background-color: #061107;
+    background-color: #061d5a;
+    
 }
 
 .arrow {
@@ -169,6 +177,7 @@ button:hover {
         padding: 0 10px;
         height: auto;
         width: auto;
+        
     }
     .instructions {
         max-width: 100%;
@@ -180,8 +189,8 @@ button:hover {
     .card {
         flex-basis: auto;
         margin: 10px 0;
-        width: 90%;
-        height: 60%;
+        width: auto;
+        height: auto;
         width: 80vw;
         height: 30vh;
     }
@@ -194,3 +203,5 @@ button:hover {
     margin: 0 auto; 
     display: block; 
 }
+
+
