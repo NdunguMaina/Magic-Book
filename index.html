@@ -13,15 +13,17 @@
     </div>
     <div class="container" id="card-container"></div>
     <button onclick="readWord()">Read Word</button>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const heading = document.querySelector('h1');
+            heading.textContent += ' 📖';
+        });
+    </script>
     <script src="script.js"></script>
+    
 </body>
 </html>
-<script>
-    document.addEventListener("DOMContentLoaded", function() {
-        const heading = document.querySelector('h1');
-        heading.textContent += ' 📖';
-    });
-</script>
+
 
 
 
