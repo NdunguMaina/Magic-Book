@@ -15,13 +15,8 @@ const consonantsAndSyllablesLast = [
 document.addEventListener("DOMContentLoaded", () => {
     const cardContainer = document.getElementById('card-container');
 
-    // Create first card with consonants/syllables (blue)
     cardContainer.appendChild(createCard(consonantsAndSyllablesFirst, 0, 'blue'));
-
-    // Create middle card with vowels (orange)
     cardContainer.appendChild(createCard(vowels, 0, 'orange'));
-
-    // Create last card with consonants/syllables (blue)
     cardContainer.appendChild(createCard(consonantsAndSyllablesLast, 0, 'blue'));
 });
 
@@ -48,12 +43,12 @@ function createCard(array, index, colorClass) {
     innerCard.className = 'inner-card';
 
     const front = document.createElement('div');
-    front.className = 'front ' + colorClass; // Add color class here
+    front.className = 'front ' + colorClass;
     front.innerText = array[index];
-    front.tabIndex = 0; // Add tabindex for keyboard navigation
+    front.tabIndex = 0;
 
     const back = document.createElement('div');
-    back.className = 'back ' + colorClass; // Add color class here
+    back.className = 'back ' + colorClass;
     back.innerText = array[(index + 1) % array.length];
 
     innerCard.appendChild(front);
@@ -68,15 +63,14 @@ function createCard(array, index, colorClass) {
     signLanguageImage.alt = 'Sign Language for ' + array[index];
 
     card.appendChild(signLanguageImage);
-
     card.appendChild(downButton);
 
     return card;
 }
 
 function changeCardContent(event, button, direction) {
-    event.stopPropagation(); // Prevent card click event
-    const card = button.closest('.card'); // Ensure we're referencing the correct card element
+    event.stopPropagation();
+    const card = button.closest('.card');
     const cardText = card.querySelector('.front').innerText;
     const array = getArrayFromCardText(cardText, card);
 
@@ -88,11 +82,9 @@ function changeCardContent(event, button, direction) {
 }
 
 function getArrayFromCardText(text, card) {
-    // Check if the text contains any vowel, if so, it's likely from the vowels array
     if (text.match(/[aeiouy]/i)) {
         return vowels;
     } else {
-        // Determine if the card is the first or last based on its position
         const isFirstCard = card === card.parentNode.firstChild;
         const isLastCard = card === card.parentNode.lastChild;
         if (isFirstCard) {
@@ -100,7 +92,6 @@ function getArrayFromCardText(text, card) {
         } else if (isLastCard) {
             return consonantsAndSyllablesLast;
         } else {
-            // Default to the last array if middle card is not clearly identified
             return consonantsAndSyllablesLast;
         }
     }
@@ -138,7 +129,6 @@ function readWord() {
     const wordUtterance = new SpeechSynthesisUtterance(word);
     utterances.push(wordUtterance);
 
-    // Speak each utterance in sequence
     utterances.reduce((promise, utterance) => {
         return promise.then(() => {
             return new Promise(resolve => {
@@ -147,6 +137,40 @@ function readWord() {
             });
         });
     }, Promise.resolve());
+
+    checkWordDefinition(word);
+}
+
+function checkWordDefinition(word) {
+    const apiUrl = `https://api.dictionaryapi.dev/api/v2/entries/en/${word}`;
+
+    fetch(apiUrl)
+        .then(response => response.json())
+        .then(data => {
+            const definitionContainer = document.getElementById('definition-container');
+            const definitionElement = document.getElementById('definition');
+            const speakButton = document.getElementById('speak-definition');
+
+            if (data.title === "No Definitions Found") {
+                definitionElement.innerText = "This word does not exist, try again.";
+                speakButton.style.display = 'none';
+            } else {
+                const definition = data[0].meanings[0].definitions[0].definition;
+                const synonyms = data[0].meanings[0].definitions[0].synonyms || [];
+                definitionElement.innerText = `Definition: ${definition}\nSynonyms: ${synonyms.join(', ')}`;
+                speakButton.style.display = 'inline';
+                speakButton.setAttribute('data-definition', definition);
+            }
+        })
+        .catch(error => {
+            console.error('Error fetching definition:', error);
+        });
+}
+
+function speakDefinition() {
+    const definition = document.getElementById('speak-definition').getAttribute('data-definition');
+    const msg = new SpeechSynthesisUtterance(definition);
+    window.speechSynthesis.speak(msg);
 }
 
 const signLanguageImages = {
