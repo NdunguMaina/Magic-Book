@@ -49,6 +49,12 @@ body {
     border: 2px solid black;
 }
 
+.card:hover {
+    transform: scale(1.1);
+    transition: transform 0.3s ease-in-out;
+    box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.4);
+}
+
 .inner-card {
     width: 6cm;
     height: 9cm;
@@ -67,7 +73,7 @@ body {
     height: 100%;
     backface-visibility: hidden;
     display: flex;
-    flex-direction: column;
+    flex-direction: row; /* Changed from column to row */
     align-items: center;
     justify-content: center;
     border: 2px solid #ccc;
@@ -96,7 +102,7 @@ body {
 }
 
 button {
-    margin-top: 10px;
+    margin-top: 9px;
     padding: 10px 20px;
     font-size: 16px;
     cursor: pointer;
@@ -108,7 +114,7 @@ button {
 }
 
 button:hover {
-    background-color: #061107;
+    background-color: #061d5a;
 }
 
 .arrow {
@@ -179,8 +185,8 @@ button:hover {
     .card {
         flex-basis: auto;
         margin: 10px 0;
-        width: 90%;
-        height: 60%;
+        width: auto;
+        height: auto;
         width: 80vw;
         height: 30vh;
     }
@@ -192,4 +198,25 @@ button:hover {
     object-fit: cover; 
     margin: 0 auto; 
     display: block; 
+}
+
+#definition-container {
+    margin-top: 20px;
+    text-align: center;
+}
+
+#speak-definition {
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    padding: 5px;
+    background-color: #09011b;
+    color: white;
+    border-radius: 50%;
+    margin-top: 10px;
+}
+
+#speak-definition:hover {
+    background-color: #061d5a;
 }
