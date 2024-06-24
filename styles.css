@@ -204,4 +204,24 @@ button:hover {
     display: block; 
 }
 
+#definition-container {
+    margin-top: 20px;
+    text-align: center;
+}
+
+#speak-definition {
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    padding: 5px;
+    background-color: #09011b;
+    color: white;
+    border-radius: 50%;
+    margin-top: 10px;
+}
+
+#speak-definition:hover {
+    background-color: #061d5a;
+}
 
