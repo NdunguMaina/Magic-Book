@@ -3,17 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Magic Book: Phonetic Flip Book</title>
+    <title>Magic Book</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div class="instructions" id="instructions">
-        <h1>Welcome to Magic Book: <br>Phonetic Flip Book</h1>
+    <div class="instructions">
+        <h1>Magic Book</h1>
+        <p>Click on the cards to hear their sounds. Use the arrows to change the letters and syllables.</p>
     </div>
-    <div class="container" id="card-container">
-        <!-- Cards will be dynamically generated here -->
-    </div>
+    <div class="container" id="card-container"></div>
     <button onclick="readWord()">Read Word</button>
+    <div id="definition-container">
+        <p id="definition"></p>
+        <button id="speak-definition" onclick="speakDefinition()" style="display: none;">
+            🔊
+        </button>
+    </div>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const heading = document.querySelector('h1');
+            heading.textContent += ' 📖';
+        });
+    </script>
     <script src="script.js"></script>
 </body>
-</html>
+</html>                          

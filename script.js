@@ -1,27 +1,25 @@
 const consonantsAndSyllablesFirst = [
-    'B', 'C', 'D', 'F', 'G', 'J', 'H', 'K', 'L', 'M', 
-    'N', 'P', 'Q', 'R', 'S', 'T', 'V', 'W', 'Y', 'Z', 
-    'BL', 'BR', 'CR', 'FL', 'GR', 'PL', 'PR', 'SL', 'SP', 'ST', 'TR', 'CH', 'SH', 'TH', 'WH', ''
+    'b', 'c', 'd', 'f', 'g', 'j', 'h', 'k', 'l', 'm', 
+    'n', 'p', 'qu', 'r', 's', 't', 'v', 'w', 'y', 'z', 
+    'sh', 'th', 'ch', 'wh', 'ph', 'bl', 'cl', 'sl', 'fl', 'gl', 'br', 'dr', 'tr', 'fr', 'pr', 'sn',
+    'st','sm', ''
 ];
 
-const vowels = ['A', 'E', 'I', 'O', 'U', 'EA' , 'AI', 'EE' , 'OA', 'OO', 'IE', 'OI', 'OY', 'AY', 'Y', 'UE', 'AW', 'OW', 'A', ''];
+const vowels = ['a', 'e', 'i', 'o', 'u', 'ea', 'ai', 'ee', 'oa','oe', 'oo', 'oi', 'ou', 'ie','oy', 
+    'ay', 'ey', 'y', 'ow', ''];   
 
 const consonantsAndSyllablesLast = [
-    'B', 'CK', 'D', 'G', 'K', 'LL', 'L', 'M', 'N', 'P', 
-    'R', 'S', 'SS', 'T', 'W', 'X', 'CE', 'DE', 'KE', 'ME', 'NE', 
-    'RE', 'TE', 'VE', 'MP', 'ND', 'NK', 'ST', 'NG', 'SH', 'NK', 'TH', 'CH', 'SH', 'SS', ''
+    'b', 'ck', 'd', 'g', 'k', 'l', 'm', 'n', 'p', 
+    'r', 't', 'x', 'll', 'ss', 'ff', 'zz', 'ng', 'nk', 'sh', 'th', 
+    'ch', 'st', 'lt', 'lk', 'lf', 'pt', 'ft', 'nd', 'ce', 'de', 'ke', 'ne', 're', 'te',
+    've', 'se', 'mp', 'lk', 'tch', 'dge',  ''
 ];
 
 document.addEventListener("DOMContentLoaded", () => {
     const cardContainer = document.getElementById('card-container');
 
-    // Create first card with consonants/syllables
     cardContainer.appendChild(createCard(consonantsAndSyllablesFirst, 0));
-
-    // Create middle card with vowels
     cardContainer.appendChild(createCard(vowels, 0));
-
-    // Create last card with consonants/syllables
     cardContainer.appendChild(createCard(consonantsAndSyllablesLast, 0));
 });
 
@@ -35,205 +33,228 @@ function createCard(array, index) {
     const upButton = document.createElement('button');
     upButton.className = 'arrow up';
     upButton.innerHTML = '&#9650;';
-    upButton.setAttribute('onclick', 'changeCardContent(this, 1)');
+    upButton.setAttribute('onclick', 'changeCardContent(event, this, 1)');
+    upButton.setAttribute('aria-label', 'Move to previous letter');
 
     const downButton = document.createElement('button');
     downButton.className = 'arrow down';
     downButton.innerHTML = '&#9660;';
-    downButton.setAttribute('onclick', 'changeCardContent(this, -1)');
+    downButton.setAttribute('onclick', 'changeCardContent(event, this, -1)');
+    downButton.setAttribute('aria-label', 'Move to next letter');
 
     const innerCard = document.createElement('div');
     innerCard.className = 'inner-card';
 
     const front = document.createElement('div');
     front.className = 'front';
-    front.innerText = array[index];
+    front.innerHTML = colorText(array[index]);
+    front.tabIndex = 0;
+
+    const back = document.createElement('div');
+    back.className = 'back';
+    back.innerHTML = colorText(array[(index + 1) % array.length]);
+
+    innerCard.appendChild(front);
+    innerCard.appendChild(back);
+
+    card.appendChild(upButton);
+    card.appendChild(innerCard);
 
     const signLanguageImage = document.createElement('img');
     signLanguageImage.className = 'sign-language-image'; 
     signLanguageImage.src = signLanguageImages[array[index]];
     signLanguageImage.alt = 'Sign Language for ' + array[index];
 
-    // Append the sign language image to the card
     card.appendChild(signLanguageImage);
-
-    const back = document.createElement('div');
-    back.className = 'back';
-    back.innerText = array[(index + 1) % array.length];
-
-    innerCard.appendChild(front);
-    
-    innerCard.appendChild(back);
-
-    card.appendChild(upButton);
-    card.appendChild(innerCard);
     card.appendChild(downButton);
 
     return card;
 }
 
-function changeCardContent(button, direction) {
-    const card = button.parentElement;
-    let array;
-    let newIndex;
+function colorText(text) {
+    return text.split('').map(char => {
+        return `<span class="${getColorClass(char)}">${char}</span>`;
+    }).join('');
+}
 
-    if (card.querySelector('.front').innerText.match(/[AEIOU]/i)) {
-        array = vowels;
-    } else if (card === card.parentElement.firstChild) {
-        array = consonantsAndSyllablesFirst;
+function getColorClass(char) {
+    const vowels = 'aeiou';
+    return vowels.includes(char) ? 'orange' : 'blue';
+}
+
+function changeCardContent(event, button, direction) {
+    event.stopPropagation();
+    const card = button.closest('.card');
+    const cardText = card.querySelector('.front').innerText;
+    const array = getArrayFromCardText(cardText, card);
+
+    const currentIndex = parseInt(card.getAttribute('data-index'));
+    const arrayLength = array.length;
+    const newIndex = (currentIndex + direction + arrayLength) % arrayLength;
+
+    updateCardContent(card, array, newIndex);
+}
+
+function getArrayFromCardText(text, card) {
+    if (text.match(/[aeiouy]/i)) {
+        return vowels;
     } else {
-        array = consonantsAndSyllablesLast;
-    }
-
-    let index = parseInt(card.getAttribute('data-index'));
-    newIndex = (index + direction + array.length) % array.length;
-    card.setAttribute('data-index', newIndex);
-    card.querySelector('.front').innerText = array[newIndex];
-    card.querySelector('.back').innerText = array[(newIndex + 1) % array.length];
-
-    // Find and update the sign language image
-    const signLanguageImage = card.querySelector('.sign-language-image');
-    if (signLanguageImage) {
-        if (signLanguageImages[array[newIndex]]) {
-            signLanguageImage.src = signLanguageImages[array[newIndex]];
-            signLanguageImage.alt = 'Sign Language for ' + array[newIndex];
+        const isFirstCard = card === card.parentNode.firstChild;
+        const isLastCard = card === card.parentNode.lastChild;
+        if (isFirstCard) {
+            return consonantsAndSyllablesFirst;
+        } else if (isLastCard) {
+            return consonantsAndSyllablesLast;
         } else {
-            // Optional: Handle missing images
-            signLanguageImage.src = 'path/to/placeholder.png'; // Path to a generic or placeholder image
+            return consonantsAndSyllablesLast;
         }
     }
-
-    actionsTaken = true;
 }
 
-let actionsTaken = false;
+function updateCardContent(card, array, index) {
+    const front = card.querySelector('.front');
+    const back = card.querySelector('.back');
+    front.innerHTML = colorText(array[index]);
+    back.innerHTML = colorText(array[(index + 1) % array.length]);
+    card.setAttribute('data-index', index);
+    card.setAttribute('data-letter', array[index]);
 
-function readWord() {
-    // if (!actionsTaken) {
-    //     alert("Please interact with the cards before reading the word.");
-    //     return;
-    // }
-    
-    const cards = document.querySelectorAll('.card');
-    let word = '';
-
-    // Collect the word from the visible side of the cards
-    cards.forEach(card => {
-        const front = card.querySelector('.front');
-        const back = card.querySelector('.back');
-        word += card.classList.contains('flipped') ? back.textContent : front.textContent;
-    });
-
-    // Function to speak a letter
-    function speakLetter(letter, delay) {
-        return new Promise(resolve => {
-            setTimeout(() => {
-                const utterance = new SpeechSynthesisUtterance(letter);
-                utterance.voice = speechSynthesis.getVoices().find(voice => voice.name.includes("Google UK English Female"));
-                utterance.onend = resolve;
-                speechSynthesis.speak(utterance);
-            }, delay);
-        });
-    }
-
-    // Speak each letter individually with a delay between each
-    async function speakLettersAndWord() {
-        for (let i = 0; i < word.length; i++) {
-            await speakLetter(word[i], 200); // 500ms delay between each letter
-        }
-        
-        // After speaking all letters, speak the whole word
-        const utterance = new SpeechSynthesisUtterance(word);
-        utterance.voice = speechSynthesis.getVoices().find(voice => voice.name.includes("Google UK English Female"));
-        speechSynthesis.speak(utterance);
-    }
-
-    speakLettersAndWord();
-}
-
-function flipCard(button) {
-    const card = button.parentElement;
-    card.classList.toggle('flipped');
-    actionsTaken = true;
+    const signLanguageImage = card.querySelector('.sign-language-image');
+    signLanguageImage.src = signLanguageImages[array[index]];
+    signLanguageImage.alt = 'Sign Language for ' + array[index];
 }
 
 function voiceCard(card) {
-    const front = card.querySelector('.front');
-    const back = card.querySelector('.back');
-    const letter = card.classList.contains('flipped') ? back.textContent : front.textContent;
-    const utterance = new SpeechSynthesisUtterance(letter);
-    utterance.voice = speechSynthesis.getVoices().find(voice => voice.name.includes("Google UK English Female"));
-    speechSynthesis.speak(utterance);
-    actionsTaken = true;
+    const letter = card.getAttribute('data-letter');
+    const msg = new SpeechSynthesisUtterance(letter);
+    window.speechSynthesis.speak(msg);
+}
+
+function readWord() {
+    const cards = document.querySelectorAll('.card');
+    let word = '';
+    let utterances = [];
+
+    cards.forEach(card => {
+        const letter = card.getAttribute('data-letter');
+        word += letter;
+        const msg = new SpeechSynthesisUtterance(letter);
+        utterances.push(msg);
+    });
+
+    const wordUtterance = new SpeechSynthesisUtterance(word);
+    utterances.push(wordUtterance);
+
+    utterances.reduce((promise, utterance) => {
+        return promise.then(() => {
+            return new Promise(resolve => {
+                utterance.onend = resolve;
+                window.speechSynthesis.speak(utterance);
+            });
+        });
+    }, Promise.resolve());
+
+    checkWordDefinition(word);
+}
+
+function checkWordDefinition(word) {
+    const apiUrl = `https://api.dictionaryapi.dev/api/v2/entries/en/${word}`;
+
+    fetch(apiUrl)
+        .then(response => response.json())
+        .then(data => {
+            const definitionContainer = document.getElementById('definition-container');
+            const definitionElement = document.getElementById('definition');
+            const speakButton = document.getElementById('speak-definition');
+
+            if (data.title === "No Definitions Found") {
+                definitionElement.innerText = "This word does not exist, try again.";
+                speakButton.style.display = 'none';
+            } else {
+                const definition = data[0].meanings[0].definitions[0].definition;
+                const synonyms = data[0].meanings[0].definitions[0].synonyms || [];
+                definitionElement.innerText = `Definition: ${definition}\nSynonyms: ${synonyms.join(', ')}`;
+                speakButton.style.display = 'inline';
+                speakButton.setAttribute('data-definition', definition);
+            }
+        })
+        .catch(error => {
+            console.error('Error fetching definition:', error);
+        });
+}
+
+function speakDefinition() {
+    const definition = document.getElementById('speak-definition').getAttribute('data-definition');
+    const msg = new SpeechSynthesisUtterance(definition);
+    window.speechSynthesis.speak(msg);
 }
 
 const signLanguageImages = {
-    'A': './images/A.png',
-    'B': './images/B.png',
-    'C': './images/C.png',
-    'D': './images/D.png',
-    'E': './images/E.png',
-    'F': './images/F.png',
-    'G': './images/G.png',
-    'H': './images/H.png',
-    'I': './images/I.png',
-    'J': './images/J.png',
-    'K': './images/K.png',
-    'L': './images/L.png',
-    'M': './images/M.png',
-    'N': './images/N.png',
-    'O': './images/O.png',
-    'P': './images/P.png',
-    'Q': './images/Q.png',
-    'R': './images/R.png',
-    'S': './images/S.png',
-    'T': './images/T.png',
-    'U': './images/U.png',
-    'V': './images/V.png',
-    'W': './images/W.png',
-    'X': './images/X.png',
-    'Y': './images/Y.png',
-    'Z': './images/Z.png',
-    'AI': './images/AI.png',
-    'AW': './images/AW.png',
-    'AY': './images/AY.png',
-    'BL': './images/BL.png',
-    'BR': './images/BR.png',
-    'CE': './images/CE.png',
-    'CH': './images/CH.png',
-    'CK': './images/CK.png',
-    'CR': './images/CR.png',
-    'DE': './images/DE.png',
-    'EA': './images/EA.png',
-    'EE': './images/EE.png',
-    'FL': './images/FL.png',
-    'GR': './images/GR.png',
-    'IE': './images/IE.png',
-    'KE': './images/KE.png',
-    'LL': './images/LL.png',
-    'ME': './images/ME.png',
-    'MP': './images/MP.png',
-    'ND': './images/ND.png',
-    'NG': './images/NG.png',
-    'NE': './images/NE.png',
-    'NK': './images/NK.png',
-    'OA': './images/OA.png',
-    'OI': './images/OI.png',
-    'OO': './images/OO.png',
-    'OY': './images/OY.png',
-    'PL': './images/PL.png',
-    'PR': './images/PR.png',
-    'QU': './images/QU.png',
-    'RE': './images/RE.png',
-    'SH': './images/SH.png',
-    'SL': './images/SL.png',
-    'SP': './images/SP.png',
-    'SS': './images/SS.png',
-    'ST': './images/ST.png',
-    'TE': './images/TE.png',
-    'TH': './images/TH.png',
-    'TR': './images/TR.png',
-    'UE': './images/UE.png',
-    'VE': './images/VE.png',
-    'WH': './images/WH.png'
+    'a': 'images/A.png',
+    'b': 'images/B.png',
+    'c': 'images/C.png',
+    'd': 'images/D.png',
+    'e': 'images/E.png',
+    'f': 'images/F.png',
+    'g': 'images/G.png',
+    'h': 'images/H.png',
+    'i': 'images/I.png',
+    'j': 'images/J.png',
+    'k': 'images/K.png',
+    'l': 'images/L.png',
+    'm': 'images/M.png',
+    'n': 'images/N.png',
+    'o': 'images/O.png',
+    'p': 'images/P.png',
+    'q': 'images/Q.png',
+    'r': 'images/R.png',
+    's': 'images/S.png',
+    't': 'images/T.png',
+    'u': 'images/U.png',
+    'v': 'images/V.png',
+    'w': 'images/W.png',
+    'x': 'images/X.png',
+    'y': 'images/Y.png',
+    'z': 'images/Z.png',
+    'bl': 'images/BL.png',
+    'br': 'images/BR.png',
+    'cr': 'images/CR.png',
+    'fl': 'images/FL.png',
+    'gr': 'images/GR.png',
+    'pl': 'images/PL.png',
+    'pr': 'images/PR.png',
+    'sl': 'images/SL.png',
+    'sp': 'images/SP.png',
+    'st': 'images/ST.png',
+    'tr': 'images/TR.png',
+    'ch': 'images/CH.png',
+    'sh': 'images/SH.png',
+    'th': 'images/TH.png',
+    'wh': 'images/WH.png',
+    'ea': 'images/EA.png',
+    'ai': 'images/AI.png',
+    'ee': 'images/EE.png',
+    'oa': 'images/OA.png',
+    'oo': 'images/OO.png',
+    'ie': 'images/IE.png',
+    'oi': 'images/OI.png',
+    'oy': 'images/OY.png',
+    'ay': 'images/AY.png',
+    'ue': 'images/UE.png',
+    'aw': 'images/AW.png',
+    'ow': 'images/OW.png',
+    'ce': 'images/CE.png',
+    'de': 'images/DE.png',
+    'ke': 'images/KE.png',
+    'me': 'images/ME.png',
+    'ne': 'images/NE.png',
+    're': 'images/RE.png',
+    'te': 'images/TE.png',
+    've': 'images/VE.png',
+    'mp': 'images/MP.png',
+    'nd': 'images/ND.png',
+    'nk': 'images/NK.png',
+    'ng': 'images/NG.png',
+    'sh': 'images/SH.png',
+    'ss': 'images/SS.png'
 };
