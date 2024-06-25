@@ -5,33 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Magic Book</title>
     <link rel="stylesheet" href="styles.css">
-    <style>
-        /* Splash screen styles */
-        #splash-screen {
-            position: fixed;
-            width: 100%;
-            height: 100%;
-            background: #fff;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-        }
-        #splash-screen h1 {
-            font-size: 2em;
-            margin-top: 20px;
-        }
-        #splash-screen img {
-            width: 100px; /* Adjust the size as needed */
-            height: auto;
-        }
-    </style>
+   
 </head>
 <body>
     <div id="splash-screen">
-        <img src="path/to/your/image.png" alt="Loading Image">
+        <img src="./images/splash.png" alt="Loading Image">
         <h1>Loading...</h1>
+    </div>
+    <div id="navbar">
+        <a href="./index.html" class="active">Home</a>
+        <a href="./introduction.html">Introduction</a>
+        <a href="#about">About</a>
     </div>
     <div class="instructions">
         <h1>Magic Book</h1>
@@ -50,12 +34,24 @@
             const heading = document.querySelector('h1');
             heading.textContent += ' 📖';
 
-            // Hide the splash screen after 3 seconds
             setTimeout(function() {
                 document.getElementById('splash-screen').style.display = 'none';
-            }, 3000); // 3000 milliseconds = 3 seconds
+                document.getElementById('navbar').style.display = 'block';
+            }, 2000); 
         });
     </script>
     <script src="script.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const currentPath = window.location.pathname;
+            const navbarLinks = document.querySelectorAll('#navbar a');
+
+            navbarLinks.forEach(link => {
+                if (link.getAttribute('href') === currentPath) {
+                    link.classList.add('active');
+                }
+            });
+        });
+    </script>
 </body>
 </html>

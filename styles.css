@@ -6,7 +6,7 @@ body {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    height: 130vh;
+    height: 120vh;
     margin: 0;
 }
 
@@ -40,13 +40,15 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    perspective: 1000px;
+    perspective: 100Lpx;
     position: relative;
     animation: slide-in 1s ease-out forwards;
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
     margin: 10px;
     border-radius: 5px;
     border: 2px solid black;
+    width: 7.2cm; 
+    height: 10.8cm; 
 }
 
 .card:hover {
@@ -56,8 +58,8 @@ body {
 }
 
 .inner-card {
-    width: 6cm;
-    height: 9cm;
+    width: 6.48cm; 
+    height: 9.36cm; 
     position: relative;
     transition: transform 0.6s;
     transform-style: preserve-3d;
@@ -110,7 +112,7 @@ button {
     background-color: #09011b;
     color: white;
     border: none;
-    border-radius: 5px;
+    border-radius: 20px;
     animation: slide-in 1s ease-out forwards;
 
 }
@@ -191,8 +193,12 @@ button:hover {
         margin: 10px 0;
         width: auto;
         height: auto;
-        width: 80vw;
-        height: 30vh;
+        width: 72vw; 
+        height: 24vh; 
+    }
+    .inner-card {
+        width: 64.8vw; 
+        height: 21.6vh; 
     }
 }
 
@@ -205,7 +211,7 @@ button:hover {
 }
 
 #definition-container {
-    margin-top: 20px;
+    margin-top: 6px;
     text-align: center;
 }
 
@@ -224,4 +230,84 @@ button:hover {
 #speak-definition:hover {
     background-color: #061d5a;
 }
+
+.container {
+            display: flex;
+        }
+        .left, .right {
+            flex: 1;
+            padding: 20px;
+        }
+        .left {
+            background-color: #f0f0f0;
+        }
+        .right {
+            background-color: #ffffff;
+        }
+
+        #splash-screen {
+            position: fixed;
+            top: 0; 
+            left: 0; 
+            width: 100%;
+            height: 100%;
+            background: #fff;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        #splash-screen h1 {
+            font-size: 2em;
+            margin-top: 20px;
+        }
+        #splash-screen img {
+            width: 600px; 
+            height: auto;
+        }
+        #navbar {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            background-color: #710606;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 999;
+            padding: 10px 0;
+            transition: background-color 0.3s ease;
+        }
+        
+        #navbar a {
+            color: #f2f2f2;
+            text-align: center;
+            padding: 14px 20px;
+            text-decoration: none;
+            font-size: 18px;
+            transition: color 0.3s ease, background-color 0.3s ease;
+        }
+        
+        #navbar a:hover {
+            background-color: #ddd;
+            color: black;
+        }
+        
+        #navbar a.active {
+            background-color: #1975cb; 
+            color: white;
+            border-radius: 4px;
+        }
+        
+        body {
+            padding-top: 50px; 
+        }
+
+        
+
+
+
+
+
+
 
