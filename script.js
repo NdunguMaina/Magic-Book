@@ -243,3 +243,4 @@ const signLanguageImages = {
     'aw': 'images/AW.png',
     'ow': 'images/OW.png'
 };
+
