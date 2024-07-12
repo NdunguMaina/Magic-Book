@@ -71,9 +71,7 @@ function createCard(array, index, colorClass) {
 function changeCardContent(event, button, direction) {
     event.stopPropagation();
     const card = button.closest('.card');
-    const cardText = card.querySelector('.front').innerText;
-    const array = getArrayFromCardText(cardText, card);
-
+    const array = getArrayFromCardText(card);
     const currentIndex = parseInt(card.getAttribute('data-index'));
     const arrayLength = array.length;
     const newIndex = (currentIndex + direction + arrayLength) % arrayLength;
@@ -81,19 +79,14 @@ function changeCardContent(event, button, direction) {
     updateCardContent(card, array, newIndex);
 }
 
-function getArrayFromCardText(text, card) {
-    if (text.match(/[aeiouy]/i)) {
-        return vowels;
+function getArrayFromCardText(card) {
+    const cards = card.parentNode.children;
+    if (card === cards[0]) {
+        return consonantsAndSyllablesFirst;
+    } else if (card === cards[cards.length - 1]) {
+        return consonantsAndSyllablesLast;
     } else {
-        const isFirstCard = card === card.parentNode.firstChild;
-        const isLastCard = card === card.parentNode.lastChild;
-        if (isFirstCard) {
-            return consonantsAndSyllablesFirst;
-        } else if (isLastCard) {
-            return consonantsAndSyllablesLast;
-        } else {
-            return consonantsAndSyllablesLast;
-        }
+        return vowels;
     }
 }
 
