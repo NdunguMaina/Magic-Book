@@ -71,9 +71,7 @@ function createCard(array, index, colorClass) {
 function changeCardContent(event, button, direction) {
     event.stopPropagation();
     const card = button.closest('.card');
-    const cardText = card.querySelector('.front').innerText;
-    const array = getArrayFromCardText(cardText, card);
-
+    const array = getArrayFromCardText(card);
     const currentIndex = parseInt(card.getAttribute('data-index'));
     const arrayLength = array.length;
     const newIndex = (currentIndex + direction + arrayLength) % arrayLength;
@@ -81,19 +79,14 @@ function changeCardContent(event, button, direction) {
     updateCardContent(card, array, newIndex);
 }
 
-function getArrayFromCardText(text, card) {
-    if (text.match(/[aeiouy]/i)) {
-        return vowels;
+function getArrayFromCardText(card) {
+    const cards = card.parentNode.children;
+    if (card === cards[0]) {
+        return consonantsAndSyllablesFirst;
+    } else if (card === cards[cards.length - 1]) {
+        return consonantsAndSyllablesLast;
     } else {
-        const isFirstCard = card === card.parentNode.firstChild;
-        const isLastCard = card === card.parentNode.lastChild;
-        if (isFirstCard) {
-            return consonantsAndSyllablesFirst;
-        } else if (isLastCard) {
-            return consonantsAndSyllablesLast;
-        } else {
-            return consonantsAndSyllablesLast;
-        }
+        return vowels;
     }
 }
 
@@ -111,6 +104,7 @@ function updateCardContent(card, array, index) {
 function voiceCard(card) {
     const letter = card.getAttribute('data-letter');
     const msg = new SpeechSynthesisUtterance(letter);
+    setFemaleVoice(msg);
     window.speechSynthesis.speak(msg);
 }
 
@@ -123,10 +117,12 @@ function readWord() {
         const letter = card.getAttribute('data-letter');
         word += letter;
         const msg = new SpeechSynthesisUtterance(letter);
+        setFemaleVoice(msg);
         utterances.push(msg);
     });
 
     const wordUtterance = new SpeechSynthesisUtterance(word);
+    setFemaleVoice(wordUtterance);
     utterances.push(wordUtterance);
 
     utterances.reduce((promise, utterance) => {
@@ -152,7 +148,7 @@ function checkWordDefinition(word) {
             const speakButton = document.getElementById('speak-definition');
 
             if (data.title === "No Definitions Found") {
-                definitionElement.innerText = "This word does not exist, try again.";
+                definitionElement.innerText = "This is a Nonsense Word";
                 speakButton.style.display = 'none';
             } else {
                 const definition = data[0].meanings[0].definitions[0].definition;
@@ -170,7 +166,14 @@ function checkWordDefinition(word) {
 function speakDefinition() {
     const definition = document.getElementById('speak-definition').getAttribute('data-definition');
     const msg = new SpeechSynthesisUtterance(definition);
+    setFemaleVoice(msg);
     window.speechSynthesis.speak(msg);
+}
+
+function setFemaleVoice(msg) {
+    const voices = window.speechSynthesis.getVoices();
+    const femaleVoices = voices.filter(voice => voice.gender === 'female' || voice.name.toLowerCase().includes('female'));
+    msg.voice = femaleVoices.length > 0 ? femaleVoices[0] : voices[0];
 }
 
 const signLanguageImages = {
