@@ -1,9 +1,18 @@
+<?php
+session_start();
+
+if (isset($_SESSION['signedIn']) && $_SESSION['signedIn']) {
+    header('Location: https://ndungumaina.github.io/Magic-Book/');
+    exit();
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sign Up</title>
+    <title>Sign In : Magic Book</title>
     <style>
         body {
             display: flex;
@@ -25,7 +34,6 @@
         .container h2 {
             margin-bottom: 20px;
         }
-        .container input[type="text"],
         .container input[type="email"],
         .container input[type="password"] {
             width: 100%;
@@ -60,34 +68,13 @@
 </head>
 <body>
     <div class="container">
-        <h2>Sign Up</h2>
-        <form onsubmit="signUp(event)">
-            <input type="email" id="email" placeholder="Email" required>
-            <input type="text" id="username" placeholder="Username" required>
-            <input type="password" id="password" placeholder="Password" required>
-            <input type="password" id="confirmPassword" placeholder="Confirm Password" required>
-            <button type="submit">Sign Up</button>
+        <h2>Sign In</h2>
+        <form action="process_sign_in.php" method="POST">
+            <input type="email" name="email" placeholder="Email" required>
+            <input type="password" name="password" placeholder="Password" required>
+            <button type="submit">Sign In</button>
         </form>
-        <a href="sign_in.html">Already have an account? Sign In</a>
+        <a href="sign_up.php">Don't have an account? Sign Up</a>
     </div>
-    <script>
-        function signUp(event) {
-            event.preventDefault();
-            const email = document.getElementById('email').value;
-            const username = document.getElementById('username').value;
-            const password = document.getElementById('password').value;
-            const confirmPassword = document.getElementById('confirmPassword').value;
-
-            if (password !== confirmPassword) {
-                alert('Passwords do not match');
-                return;
-            }
-
-            // Save user data (for simplicity, using localStorage)
-            localStorage.setItem('user', JSON.stringify({ email, username, password }));
-            localStorage.setItem('signedIn', 'true');
-            window.location.href = 'index.html';
-        }
-    </script>
 </body>
 </html>
