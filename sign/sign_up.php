@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sign In</title>
+    <title>Sign Up : Magic Book</title>
     <style>
         body {
             display: flex;
@@ -25,8 +25,9 @@
         .container h2 {
             margin-bottom: 20px;
         }
-        .container input[type="text"],
-        .container input[type="password"] {
+        .container input[type="email"],
+        .container input[type="password"],
+        .container input[type="tel"] {
             width: 100%;
             padding: 10px;
             margin: 10px 0;
@@ -59,40 +60,15 @@
 </head>
 <body>
     <div class="container">
-        <h2>Sign In</h2>
-        <form onsubmit="signIn(event)">
-            <input type="text" id="username" placeholder="Username" required>
-            <input type="password" id="password" placeholder="Password" required>
-            <button type="submit">Sign In</button>
+        <h2>Sign Up</h2>
+        <form action="process_sign_up.php" method="POST">
+            <input type="email" name="email" placeholder="Email" required>
+            <input type="tel" name="phoneNumber" placeholder="Phone Number" required>
+            <input type="password" name="password" placeholder="Password" required>
+            <input type="password" name="confirmPassword" placeholder="Confirm Password" required>
+            <button type="submit">Sign Up</button>
         </form>
-        <a href="sign_up.html">Don't have an account? Sign Up</a>
+        <a href="index.php">Already have an account? Sign In</a>
     </div>
-    <script>
-        // Initialize default user credentials if not already set
-        if (!localStorage.getItem('user')) {
-            const defaultUser = {
-                username: 'guest',
-                password: 'password123'
-            };
-            localStorage.setItem('user', JSON.stringify(defaultUser));
-        }
-
-        function signIn(event) {
-            event.preventDefault();
-            const username = document.getElementById('username').value;
-            const password = document.getElementById('password').value;
-
-            // Retrieve user data (for simplicity, using localStorage)
-            const user = JSON.parse(localStorage.getItem('user'));
-
-            if (user && user.username === username && user.password === password) {
-                localStorage.setItem('signedIn', 'true');
-                window.location.href = 'index.html';
-            } else {
-                alert('Invalid username or password');
-            }
-        }
-    </script>
 </body>
 </html>
-
