@@ -103,39 +103,37 @@ function updateCardContent(card, array, index) {
 
 function voiceCard(card) {
     const letter = card.getAttribute('data-letter');
-    const msg = new SpeechSynthesisUtterance(letter);
-    setFemaleVoice(msg);
-    window.speechSynthesis.speak(msg);
+    
+    // Construct the path to the corresponding MP3 file
+    const audioPath = `./phonics/${letter}.mp3`;
+    
+    // Create a new Audio object and play the MP3 file
+    const audio = new Audio(audioPath);
+    audio.play();
 }
+
 
 function readWord() {
     const cards = document.querySelectorAll('.card');
     let word = '';
-    let utterances = [];
 
+    // Concatenate the letters/syllables from each card to form the word
     cards.forEach(card => {
         const letter = card.getAttribute('data-letter');
         word += letter;
-        const msg = new SpeechSynthesisUtterance(letter);
-        setFemaleVoice(msg);
-        utterances.push(msg);
     });
 
+    // Create a single utterance for the full word
     const wordUtterance = new SpeechSynthesisUtterance(word);
     setFemaleVoice(wordUtterance);
-    utterances.push(wordUtterance);
+    
+    // Speak the complete word
+    window.speechSynthesis.speak(wordUtterance);
 
-    utterances.reduce((promise, utterance) => {
-        return promise.then(() => {
-            return new Promise(resolve => {
-                utterance.onend = resolve;
-                window.speechSynthesis.speak(utterance);
-            });
-        });
-    }, Promise.resolve());
-
+    // Optionally check for the definition of the full word
     checkWordDefinition(word);
 }
+
 
 function checkWordDefinition(word) {
     const apiUrl = `https://api.dictionaryapi.dev/api/v2/entries/en/${word}`;
