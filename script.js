@@ -104,10 +104,10 @@ function updateCardContent(card, array, index) {
 function voiceCard(card) {
     const letter = card.getAttribute('data-letter');
     
-    // Construct the path to the corresponding MP3 file
-    const audioPath = `./phonics/${letter}.mp3`;
+    // Construct the path to the corresponding aac file
+    const audioPath = `./phonics/${letter}.aac`;
     
-    // Create a new Audio object and play the MP3 file
+    // Create a new Audio object and play the aac file
     const audio = new Audio(audioPath);
     audio.play();
 }
